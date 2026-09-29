@@ -22,11 +22,14 @@ ambiguity about which half a file belongs to.
 ## Setup
 
 ```bash
-python3.12 -m venv .venv
+python3 -m venv .venv          # 3.12 or newer
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 pytest -q                      # 38 tests, the shared foundation
 ```
+
+Checked on 3.12 (CI) and 3.14 (numpy 2.5.3). If your `python3` is older than 3.12, name a
+newer one explicitly: `python3.12 -m venv .venv`.
 
 ## The three functions
 
