@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- project ---------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+.idea/
+.vscode/
+
+# one git worktree per working session, kept inside the repo
+.claude/worktrees/
+
+# local tooling
+uv.lock
