@@ -133,7 +133,9 @@ Bring an opinion to the next meeting and we will pick one.
 
 ## Conventions
 
-- `main` is protected by convention, not by settings: branch, push, open a pull request.
+- `main` is protected by convention, not by settings. Each change starts as an issue with
+  a label and an assignee. Branch, push, and open a pull request whose description says
+  `Closes #<issue>`. Merging closes the issue and deletes the branch.
 - `ruff check . && ruff format .` and `pytest -q` before pushing. CI runs both and reports
   lint without blocking a merge.
 - Numbers in the report come from a script in the repository, never retyped from a
