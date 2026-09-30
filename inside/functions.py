@@ -149,8 +149,8 @@ def fun3_grad(x):
 def fun3_hess(x):
     """H = [[-400(x2 - x1^2) + 800 x1^2 + 2, -400 x1], [-400 x1, 200]].
 
-    Indefinite wherever x2 > x1^2 + 1/200, which is most of the valley floor: Newton needs
-    a modification there, because the Newton direction is not a descent direction.
+    det H = 400 - 80000 (x2 - x1^2), so H is indefinite only above the valley, where
+    x2 > x1^2 + 1/200. There the Newton direction can point uphill, though it need not.
     """
     x = np.asarray(x, dtype=np.float64)
     r = x[1] - x[0] ** 2
