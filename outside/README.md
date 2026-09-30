@@ -2,13 +2,7 @@
 
 The out-of-class half: our own optimization problem, on the same topic as `inside/`.
 
-Nothing here is chosen yet. The candidates and the reason the choice has a lead time are
-in the repository README, under "The outside project".
+Not chosen yet. The candidates are in
+[#10](https://github.com/ajbarea/cisc820-project2/issues/10).
 
-Two rules carry over from Project 1 and from the course conventions:
-
-- Nothing in this folder reads `inside/data/`. The two halves stay separate on both sides.
-- Whatever data we bring gets committed under `outside/data/`, so a fresh clone runs
-  without downloading anything.
-
-`pytest` already collects `outside/tests/`, so the first test written here runs in CI.
+Data for it can live in `outside/data/`, and tests in `outside/tests/` run in CI with the rest.

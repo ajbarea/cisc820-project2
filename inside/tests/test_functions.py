@@ -95,7 +95,7 @@ def test_column_major_and_row_major_build_different_problems():
     """The reshape order is an assumption, not a formality: it changes the objective.
 
     Both orders are feasible at x = 0 and both give a convex problem, so nothing in the
-    data rules either out. This test exists to keep that visible -- see the README.
+    data rules either out. This test exists to keep that visible -- see issue #9.
     """
     column_major = load_fun2(order="F")
     row_major = load_fun2(order="C")

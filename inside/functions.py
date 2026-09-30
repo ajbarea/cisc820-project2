@@ -77,7 +77,7 @@ def load_fun2(directory=DATA, order="F"):
     Each file is one whitespace-separated run of numbers, so A's 50,000 entries have to be
     folded back into a matrix. ``order="F"`` folds column by column, which is how MATLAB
     writes a matrix out; ``order="C"`` folds row by row. Both build a valid problem with a
-    different minimum, so the choice is an assumption, not a detail -- see the README.
+    different minimum, so the choice is an assumption, not a detail -- see issue #9.
     """
     A = np.loadtxt(Path(directory) / "fun2_A.txt").reshape((500, 100), order=order)
     b = np.loadtxt(Path(directory) / "fun2_b.txt")
