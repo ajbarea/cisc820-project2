@@ -44,7 +44,7 @@ your own derivatives.
 
 Everything still to do is an [issue](https://github.com/ajbarea/cisc820-project2/issues).
 
-- [#5](https://github.com/ajbarea/cisc820-project2/issues/5) Shared line search and stopping rule
+- [#5](https://github.com/ajbarea/cisc820-project2/issues/5) Shared line search and stopping rule (optional)
 - [#6](https://github.com/ajbarea/cisc820-project2/issues/6) Gradient descent
 - [#7](https://github.com/ajbarea/cisc820-project2/issues/7) Newton's method
 - [#8](https://github.com/ajbarea/cisc820-project2/issues/8) Quasi-Newton (BFGS)
