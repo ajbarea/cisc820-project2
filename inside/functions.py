@@ -75,9 +75,9 @@ def load_fun2(directory=DATA, order="F"):
     """Read A (500, 100), b (500,) and c (100,) from ``data/fun2_{A,b,c}.txt``.
 
     Each file is one whitespace-separated run of numbers, so A's 50,000 entries have to be
-    folded back into a matrix. ``order="F"`` folds column by column, which is how MATLAB
-    writes a matrix out; ``order="C"`` folds row by row. Both build a valid problem with a
-    different minimum, so the choice is an assumption, not a detail -- see issue #9.
+    folded back into a matrix. The instructor's ``data/ReadMe.rtf`` reads it with MATLAB's
+    ``fscanf(fid, '%e ', [500,100])``, which fills column by column: ``order="F"``.
+    ``order="C"`` (row by row) builds a different valid problem with a different minimum.
     """
     A = np.loadtxt(Path(directory) / "fun2_A.txt").reshape((500, 100), order=order)
     b = np.loadtxt(Path(directory) / "fun2_b.txt")
