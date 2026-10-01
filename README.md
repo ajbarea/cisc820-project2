@@ -48,7 +48,6 @@ Everything still to do is an [issue](https://github.com/ajbarea/cisc820-project2
 - [#6](https://github.com/ajbarea/cisc820-project2/issues/6) Gradient descent
 - [#7](https://github.com/ajbarea/cisc820-project2/issues/7) Newton's method
 - [#8](https://github.com/ajbarea/cisc820-project2/issues/8) Quasi-Newton (BFGS)
-- [#9](https://github.com/ajbarea/cisc820-project2/issues/9) Ask the instructor whether there are deliverables beyond the solutions table
 - [#10](https://github.com/ajbarea/cisc820-project2/issues/10) Choose the outside project
 - [#11](https://github.com/ajbarea/cisc820-project2/issues/11) Nelder-Mead (optional)
 
