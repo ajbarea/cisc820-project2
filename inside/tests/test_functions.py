@@ -92,10 +92,10 @@ def test_fun2_hessian_is_positive_definite_at_the_origin():
 
 
 def test_column_major_and_row_major_build_different_problems():
-    """The reshape order is an assumption, not a formality: it changes the objective.
+    """The reshape order changes the objective, so the ReadMe's column-major order matters.
 
-    Both orders are feasible at x = 0 and both give a convex problem, so nothing in the
-    data rules either out. This test exists to keep that visible -- see issue #9.
+    Both orders are feasible at x = 0 and both give a convex problem; nothing in the data
+    itself rules either out, only ``data/ReadMe.rtf`` does.
     """
     column_major = load_fun2(order="F")
     row_major = load_fun2(order="C")
