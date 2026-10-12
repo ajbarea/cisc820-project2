@@ -1,12 +1,19 @@
 """Nelder-Mead simplex method (notes section 6, p.31), steps 1 to 6 exactly as listed.
 
+A simplex is n + 1 points in n dimensions: a triangle when n = 2. Each iteration replaces
+the worst point with a better one, found by reflecting it through the midpoint of the
+others, stretching that reflection further (expansion), or pulling it toward the midpoint
+(contraction). If none of those helps, every point shrinks toward the best one. Only f
+is ever evaluated, never a gradient. The coefficients are
+
     alpha = 1 reflection, gamma = 2 expansion, rho = 1/2 contraction, sigma = 1/2 reduction
 
 The notes give no stopping rule; this stops once the simplex's f values span less than tol.
-Nor do they break ties in step 1. Figure 6.2 needs one at T6, where (3.6, 1.6) and
-(2.4, 2.4) both have f = -6.24 exactly; it treats the older vertex as worse. Computed,
-the two differ in the last bits, so values within a relative 1e-12 count as tied, and
-within a tie the more recently accepted point ranks better.
+Nor do they say how to rank two points with equal f in step 1. Figure 6.2 needs that at
+T6, its sixth triangle, where (3.6, 1.6) and (2.4, 2.4) both have f = -6.24 exactly, and
+the figure treats the older point as worse. In floating point the two values differ in
+the last digits, so values within a relative 1e-12 count as tied, and within a tie the
+more recently accepted point ranks better.
 """
 
 from __future__ import annotations

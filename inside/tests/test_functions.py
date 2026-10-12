@@ -113,9 +113,9 @@ def test_fun3_minimum_is_zero_at_one_one():
     assert np.all(fun3_grad([1.0, 1.0]) == 0.0)
 
 
-def test_fun3_hessian_is_indefinite_on_the_valley_floor():
-    # x2 > x1^2 + 1/200 makes the (0, 0) entry negative, so the Newton direction there
-    # is not guaranteed to be a descent direction.
+def test_fun3_hessian_is_indefinite_above_the_valley():
+    # (0, 1) has x2 > x1^2 + 1/200, so det H < 0 and H has a negative eigenvalue. The
+    # Newton direction there is not guaranteed to be a descent direction.
     H = fun3_hess([0.0, 1.0])
     assert np.min(np.linalg.eigvalsh(H)) < 0
 

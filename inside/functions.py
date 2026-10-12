@@ -10,6 +10,9 @@ The derivative formulas for fun2 are the ones the project description gives in M
     grad = c + A'(1 ./ (b - Ax))
     H    = A' diag(1 ./ (b - Ax).^2) A
 
+Notation follows MATLAB: ``c'x`` is c transposed times x (the dot product), ``A'`` is the
+transpose of A, and ``./`` and ``.^`` act element by element.
+
 ``PROBLEMS`` holds all three behind one interface, so an optimizer written against
 ``(f, grad, hess, x0)`` runs on every function without knowing which it has.
 """
@@ -61,7 +64,11 @@ def fun1_grad(x):
 
 
 def fun1_hess(x):
-    """H = diag(2i), constant. Eigenvalues 2..200, so cond(H) = 100 whatever x is."""
+    """H = diag(2i), the same at every x.
+
+    Its eigenvalues run from 2 to 200, so the condition number (largest eigenvalue over
+    smallest) is 100. That spread is what makes gradient descent zig-zag on this function.
+    """
     x = np.asarray(x, dtype=np.float64)
     return np.diag(2 * _I[: x.size])
 
@@ -86,6 +93,7 @@ def load_fun2(directory=DATA, order="F"):
 
 
 def _coefficients():
+    """A, b and c, read from disk on the first call and reused after that."""
     global _FUN2
     if _FUN2 is None:
         _FUN2 = load_fun2()
@@ -149,8 +157,10 @@ def fun3_grad(x):
 def fun3_hess(x):
     """H = [[-400(x2 - x1^2) + 800 x1^2 + 2, -400 x1], [-400 x1, 200]].
 
-    det H = 400 - 80000 (x2 - x1^2), so H is indefinite only above the valley, where
-    x2 > x1^2 + 1/200. There the Newton direction can point uphill, though it need not.
+    det H = 400 - 80000 (x2 - x1^2). The curved valley the function is named for runs
+    along x2 = x1^2. Below it and on it, det H > 0 and H is positive definite. Just above
+    it, once x2 > x1^2 + 1/200, det H < 0 and H is indefinite (one negative eigenvalue).
+    There the Newton direction can point uphill, though it need not.
     """
     x = np.asarray(x, dtype=np.float64)
     r = x[1] - x[0] ** 2
@@ -209,7 +219,7 @@ PROBLEMS = {
         n=2,
         x0=np.array([-1.2, 1.0]),
         minimum=0.0,
-        note="Rosenbrock. Non-convex, minimum 0 at (1, 1) -- textbook, not given by the "
-        "instructor. (-1.2, 1.0) is the standard starting point.",
+        note="Rosenbrock. Non-convex. Its minimum, 0 at (1, 1), is the textbook value; the "
+        "instructor does not give it. (-1.2, 1.0) is the standard starting point.",
     ),
 }
