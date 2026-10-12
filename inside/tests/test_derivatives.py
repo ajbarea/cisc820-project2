@@ -9,39 +9,7 @@ import numpy as np
 import pytest
 
 from derivatives import EPS, gradient, hessian, step_size
-
-
-def f1(x):
-    """y = x1^2 + 10 x2^2 (notes p.6)."""
-    return x[0] ** 2 + 10 * x[1] ** 2
-
-
-def grad1(x):
-    return np.array([2 * x[0], 20 * x[1]])
-
-
-def hess1(_x):
-    return np.array([[2.0, 0.0], [0.0, 20.0]])
-
-
-def _terms(x):
-    return np.exp(x[0] + 3 * x[1] - 0.1), np.exp(x[0] - 3 * x[1] - 0.1), np.exp(-x[0] - 0.1)
-
-
-def f2(x):
-    """y = e^(x1+3x2-0.1) + e^(x1-3x2-0.1) + e^(-x1-0.1) (notes p.6)."""
-    return sum(_terms(x))
-
-
-def grad2(x):
-    a, b, c = _terms(x)
-    return np.array([a + b - c, 3 * a - 3 * b])
-
-
-def hess2(x):
-    a, b, c = _terms(x)
-    return np.array([[a + b + c, 3 * a - 3 * b], [3 * a - 3 * b, 9 * a + 9 * b]])
-
+from notes_examples import f1, f2, grad1, grad2, hess1, hess2
 
 X0 = np.array([1.0, 1.0])
 

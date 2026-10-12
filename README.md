@@ -40,11 +40,21 @@ p.f(p.x0), p.grad(p.x0), p.hess(p.x0)
 `inside/derivatives.py` has finite-difference gradients and Hessians, handy for checking
 your own derivatives.
 
+## The methods
+
+| File | Method |
+|---|---|
+| `inside/line_search.py` | Backtracking line search and the descent loop the methods share |
+
+`line_search.minimize(f, grad, x0, direction)` runs the loop for any method that supplies
+`direction(x, g) -> p`. It stops once f changes by less than `tol` (1e-8 by default, which
+reproduces the iteration counts in the notes' figures) and returns every iterate in
+`Result.path`.
+
 ## What's left
 
 Everything still to do is an [issue](https://github.com/ajbarea/cisc820-project2/issues).
 
-- [#5](https://github.com/ajbarea/cisc820-project2/issues/5) Shared line search and stopping rule (optional)
 - [#6](https://github.com/ajbarea/cisc820-project2/issues/6) Gradient descent
 - [#7](https://github.com/ajbarea/cisc820-project2/issues/7) Newton's method
 - [#8](https://github.com/ajbarea/cisc820-project2/issues/8) Quasi-Newton (BFGS)
