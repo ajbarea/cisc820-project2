@@ -6,6 +6,11 @@ Implements the two exercises in topic-04 (Introduction to Optimization), section
     hessian    p.9   difference of gradients, forward or central, from any gradient function
     step_size  p.8   the notes' choice of h, sqrt(eps) * |x|_inf
 
+eps is machine epsilon, about 2.2e-16, the gap between 1.0 and the next float.
+|x|_inf is the infinity norm: the largest absolute entry of x.
+
+The "order" of a formula is how fast its error shrinks with h: halve h and an order-p
+formula's error drops by about 2^p. Higher order costs more evaluations of f per entry.
 The notes call all three gradient formulas "central difference". Order 1 is one-sided
 (it only steps forward, x + h); orders 2 and 4 step both ways.
 """

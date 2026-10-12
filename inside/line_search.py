@@ -6,6 +6,11 @@
     quadratic_alpha0     p.18  alpha0 from a quadratic through the last two f values
     minimize             p.12  "until x is a good enough solution": find p, step, repeat
 
+Every method here picks a search direction p, then the line search picks a step length
+alpha and moves x to x + alpha p. phi(alpha) = f(x + alpha p) is f along that line, and
+phi'(0) = p'grad f(x) is its slope at the start (p' is p transposed, so this is a dot
+product). p is a descent direction when that slope is negative.
+
 The notes never fix "good enough". Stopping once |f(x_k) - f(x_(k-1))| < 1e-8 reproduces
 the iteration counts of every convergence figure in topics 06 to 08, so that is the default.
 A run also stops when the line search returns alpha = 0, meaning no step can move x.
@@ -27,14 +32,19 @@ __all__ = [
     "quadratic_alpha0",
 ]
 
-C = 0.1  # the notes' examples all use c = 0.1, rho = 1/2
-RHO = 0.5
+# The notes' examples all use c = 0.1 and rho = 1/2.
+C = 0.1  # how much of the predicted decrease a step must achieve to be accepted
+RHO = 0.5  # factor alpha shrinks by after each rejected trial
 TOL = 1e-8
 MAX_ITER = 10_000
 
 
 def backtracking(f, x, p, grad_x, alpha0=1.0, c=C, rho=RHO, fx=None):
     """Largest alpha = alpha0 * rho^j with f(x + alpha p) <= f(x) + c alpha p'grad f(x).
+
+    That inequality is the sufficient-decrease (Armijo) condition: the step must lower f by
+    at least a fraction c of what the slope at x predicts. Starting from alpha0, alpha is
+    multiplied by rho until it holds. ``fx`` is f(x) if the caller already has it.
 
     A trial point where f is +inf or overflows fails the test like any other, which is what
     keeps the search inside fun2's domain. Returns 0 once alpha * p is too small to move x
@@ -112,7 +122,7 @@ def minimize(
     x = np.asarray(x0, dtype=np.float64).copy()
     fx = f(x)
     path, values, alphas = [x.copy()], [fx], []
-    prev = None
+    prev = None  # (alpha, p, grad) of the last iteration, for the "previous" alpha0 rule
     for _ in range(max_iter):
         g = np.asarray(grad(x), dtype=np.float64)
         p = direction(x, g)

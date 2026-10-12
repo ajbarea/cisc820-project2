@@ -29,8 +29,9 @@ FIGURE = {
     ),
 }
 
-# The quadratic's second iterate and second decrease need a larger c; see the module docstring.
-AT_C_0_1 = {"5.1 quadratic": 1, "5.1 exponential": 2}
+# How many of the figure's iterates and decreases a run at c = 0.1 reproduces. The quadratic's
+# second iterate needs a larger c; see the module docstring and the c tests below.
+MATCHED_AT_C_0_1 = {"5.1 quadratic": 1, "5.1 exponential": 2}
 PATH_TOL = {"5.1 quadratic": 1.0, "5.1 exponential": 0.05}  # a fraction of one axis tick
 
 
@@ -46,7 +47,7 @@ def test_figure_iteration_count(name):
 
 @pytest.mark.parametrize("name", FIGURE)
 def test_figure_decreases(name):
-    want = FIGURE[name]["decreases"][: AT_C_0_1[name]]
+    want = FIGURE[name]["decreases"][: MATCHED_AT_C_0_1[name]]
     assert run(name).decreases[: len(want)] == pytest.approx(want, rel=0.06, abs=0.5)
 
 
@@ -54,7 +55,7 @@ def test_figure_decreases(name):
 def test_figure_path(name):
     r = run(name)
     for k, xk in FIGURE[name]["path"].items():
-        if k <= AT_C_0_1[name]:
+        if k <= MATCHED_AT_C_0_1[name]:
             assert r.path[k] == pytest.approx(xk, abs=PATH_TOL[name])
 
 
