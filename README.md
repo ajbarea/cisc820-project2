@@ -45,6 +45,7 @@ your own derivatives.
 | File | Method |
 |---|---|
 | `inside/line_search.py` | Backtracking line search and the descent loop the methods share |
+| `inside/gradient_descent.py` | Gradient descent, alpha0 = 1 or p.18's previous-step rule |
 
 `line_search.minimize(f, grad, x0, direction)` runs the loop for any method that supplies
 `direction(x, g) -> p`. It stops once f changes by less than `tol` (1e-8 by default, which
@@ -55,7 +56,6 @@ reproduces the iteration counts in the notes' figures) and returns every iterate
 
 Everything still to do is an [issue](https://github.com/ajbarea/cisc820-project2/issues).
 
-- [#6](https://github.com/ajbarea/cisc820-project2/issues/6) Gradient descent
 - [#7](https://github.com/ajbarea/cisc820-project2/issues/7) Newton's method
 - [#8](https://github.com/ajbarea/cisc820-project2/issues/8) Quasi-Newton (BFGS)
 - [#10](https://github.com/ajbarea/cisc820-project2/issues/10) Choose the outside project
