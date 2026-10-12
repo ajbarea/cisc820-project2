@@ -48,6 +48,7 @@ your own derivatives.
 | `inside/gradient_descent.py` | Gradient descent, alpha0 = 1 or p.18's previous-step rule |
 | `inside/newton.py` | Newton, with p.24's Greenstadt modification as an option (`modified=True`) |
 | `inside/quasi_newton.py` | BFGS (`inverse=True` for p.28's inverse form) and DFP |
+| `inside/nelder_mead.py` | Nelder-Mead simplex, derivative-free: `nelder_mead(f, simplex)` |
 
 `line_search.minimize(f, grad, x0, direction)` runs the loop for any method that supplies
 `direction(x, g) -> p`. It stops once f changes by less than `tol` (1e-8 by default, which
@@ -59,6 +60,5 @@ reproduces the iteration counts in the notes' figures) and returns every iterate
 Everything still to do is an [issue](https://github.com/ajbarea/cisc820-project2/issues).
 
 - [#10](https://github.com/ajbarea/cisc820-project2/issues/10) Choose the outside project
-- [#11](https://github.com/ajbarea/cisc820-project2/issues/11) Nelder-Mead (optional)
 
 CI runs the tests on every push.
