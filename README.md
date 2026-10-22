@@ -79,3 +79,7 @@ the iterations and the time, and saves one plot per function to `inside/results/
 | fun2 | -2443.247657 | newton |
 | fun3 | 7.682025129e-24 | newton |
 
+## Comments
+For all functions, our Newton implementation is the fastest optimization method, followed by the slower but cheaper Quasi-Newton BFGS method.
+
+`fun1` converges incredibly quickly for our Newton method, as it is a quadratic function, similarly to `fun3`.
