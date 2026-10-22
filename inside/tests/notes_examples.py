@@ -27,7 +27,11 @@ def hess1(_x):
 
 
 def _terms(x):
-    return np.exp(x[0] + 3 * x[1] - 0.1), np.exp(x[0] - 3 * x[1] - 0.1), np.exp(-x[0] - 0.1)
+    return (
+        np.exp(x[0] + 3 * x[1] - 0.1),
+        np.exp(x[0] - 3 * x[1] - 0.1),
+        np.exp(-x[0] - 0.1),
+    )
 
 
 def f2(x):

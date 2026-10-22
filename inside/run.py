@@ -61,7 +61,9 @@ def table(results):
     for (fname, mname), (r, sec) in results.items():
         with np.errstate(all="ignore"):
             g = np.linalg.norm(PROBLEMS[fname].grad(r.x))
-        rows.append([fname, mname, f"{r.f:.10g}", f"{g:.2e}", str(r.iterations), f"{sec:.3f}"])
+        rows.append(
+            [fname, mname, f"{r.f:.10g}", f"{g:.2e}", str(r.iterations), f"{sec:.3f}"]
+        )
     # Pad every column to its widest cell: text left-aligned, numbers right-aligned.
     widths = [max(len(row[i]) for row in [header, *rows]) for i in range(len(header))]
     text_columns = 2  # Function and Method; the rest are numbers
@@ -74,7 +76,8 @@ def table(results):
         return "| " + " | ".join(padded) + " |"
 
     dashes = [
-        "-" * (w + 2) if i < text_columns else "-" * (w + 1) + ":" for i, w in enumerate(widths)
+        "-" * (w + 2) if i < text_columns else "-" * (w + 1) + ":"
+        for i, w in enumerate(widths)
     ]
     rule = "|" + "|".join(dashes) + "|"
     return "\n".join([line(header), rule, *(line(row) for row in rows)])
@@ -101,9 +104,15 @@ def plot(results, directory=RESULTS):
         fig, ax = plt.subplots(figsize=(6, 4))
         for mname, r in runs.items():
             gap = np.asarray(r.values) - fstar
-            gap[gap <= 0] = np.nan  # reached f* to machine precision: nothing to draw on a log axis
+            gap[
+                gap <= 0
+            ] = np.nan  # reached f* to machine precision: nothing to draw on a log axis
             ax.semilogy(gap, label=f"{mname} ({r.iterations} it)")
-        ax.set(xlabel="iteration k", ylabel="f(x_k) - f*", title=f"{fname}: {PROBLEMS[fname].name}")
+        ax.set(
+            xlabel="iteration k",
+            ylabel="f(x_k) - f*",
+            title=f"{fname}: {PROBLEMS[fname].name}",
+        )
         ax.set_xscale("symlog", linthresh=10)
         ax.grid(True, which="both", alpha=0.3)
         ax.legend()
@@ -118,13 +127,23 @@ def plot(results, directory=RESULTS):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
-        "-functions", nargs="*", default=[], help=f"any of {', '.join(PROBLEMS)} (default: all)"
+        "-functions",
+        nargs="*",
+        default=[],
+        help=f"any of {', '.join(PROBLEMS)} (default: all)",
     )
     parser.add_argument(
-        "-methods", nargs="*", default=[], help=f"any of {', '.join(METHODS)} (default: all)"
+        "-methods",
+        nargs="*",
+        default=[],
+        help=f"any of {', '.join(METHODS)} (default: all)",
     )
-    parser.add_argument("--tol", type=float, default=TOL, help="stop when |f_k - f_(k-1)| < tol")
-    parser.add_argument("--no-plot", action="store_true", help="skip saving convergence plots")
+    parser.add_argument(
+        "--tol", type=float, default=TOL, help="stop when |f_k - f_(k-1)| < tol"
+    )
+    parser.add_argument(
+        "--no-plot", action="store_true", help="skip saving convergence plots"
+    )
     args = parser.parse_args()
     unknown_funcs = sorted(set(args.functions) - set(PROBLEMS))
     if unknown_funcs:

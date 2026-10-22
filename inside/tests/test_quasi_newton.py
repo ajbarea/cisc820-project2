@@ -23,7 +23,9 @@ from quasi_newton import bfgs, bfgs_update
 RUNS = {"5.1 quadratic": QUADRATIC, "5.1 exponential": EXPONENTIAL}
 
 FIGURE = {
-    "5.1 quadratic": dict(iterations=7, decreases=(2.4e4, 3.1e3), path={1: (44, -12), 2: (-1, -6)}),
+    "5.1 quadratic": dict(
+        iterations=7, decreases=(2.4e4, 3.1e3), path={1: (44, -12), 2: (-1, -6)}
+    ),
     "5.1 exponential": dict(
         iterations=9, decreases=(112, 20), path={1: (1.5, -0.57), 2: (-0.78, -0.02)}
     ),
@@ -32,7 +34,10 @@ FIGURE = {
 # How many of the figure's iterates and decreases a run at c = 0.1 reproduces. The quadratic's
 # second iterate needs a larger c; see the module docstring and the c tests below.
 MATCHED_AT_C_0_1 = {"5.1 quadratic": 1, "5.1 exponential": 2}
-PATH_TOL = {"5.1 quadratic": 1.0, "5.1 exponential": 0.05}  # a fraction of one axis tick
+PATH_TOL = {
+    "5.1 quadratic": 1.0,
+    "5.1 exponential": 0.05,
+}  # a fraction of one axis tick
 
 
 def run(name, **options):
@@ -63,8 +68,12 @@ def test_bfgs_quadratic_figure_needs_larger_c():
     """Figure 5.1's second iterate (-1, -6) is half a step; c = 0.1 accepts the full step."""
     stated = run("5.1 quadratic")
     figure = run("5.1 quadratic", c=0.15)
-    assert stated.alphas[1] == 1 and stated.path[2] == pytest.approx((-45.76, 0.458), abs=0.01)
-    assert figure.alphas[1] == 0.5 and figure.path[2] == pytest.approx((-1, -6), abs=0.05)
+    assert stated.alphas[1] == 1 and stated.path[2] == pytest.approx(
+        (-45.76, 0.458), abs=0.01
+    )
+    assert figure.alphas[1] == 0.5 and figure.path[2] == pytest.approx(
+        (-1, -6), abs=0.05
+    )
     assert stated.iterations == figure.iterations == 7
 
 

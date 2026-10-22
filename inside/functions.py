@@ -164,7 +164,9 @@ def fun3_hess(x):
     """
     x = np.asarray(x, dtype=np.float64)
     r = x[1] - x[0] ** 2
-    return np.array([[-400 * r + 800 * x[0] ** 2 + 2, -400 * x[0]], [-400 * x[0], 200.0]])
+    return np.array(
+        [[-400 * r + 800 * x[0] ** 2 + 2, -400 * x[0]], [-400 * x[0], 200.0]]
+    )
 
 
 # --- one interface over the three -------------------------------------------------------

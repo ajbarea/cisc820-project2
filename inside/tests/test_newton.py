@@ -33,7 +33,9 @@ def test_figure_iteration_count(name):
 @pytest.mark.parametrize("name", FIGURE)
 def test_figure_decreases(name):
     want = FIGURE[name]["decreases"]
-    assert newton(*RUNS[name]).decreases[: len(want)] == pytest.approx(want, rel=0.06, abs=0.5)
+    assert newton(*RUNS[name]).decreases[: len(want)] == pytest.approx(
+        want, rel=0.06, abs=0.5
+    )
 
 
 @pytest.mark.parametrize("name", FIGURE)

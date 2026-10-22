@@ -40,14 +40,20 @@ def _unit(n, i):
 def gradient(f, x):
     """Central difference (f(x + h e_i) - f(x - h e_i)) / 2h, one coordinate at a time."""
     return np.array(
-        [(f(x + _unit(x.size, i)) - f(x - _unit(x.size, i))) / (2 * H) for i in range(x.size)]
+        [
+            (f(x + _unit(x.size, i)) - f(x - _unit(x.size, i))) / (2 * H)
+            for i in range(x.size)
+        ]
     )
 
 
 def hessian(grad, x):
     """Column j is (grad(x + h e_j) - grad(x - h e_j)) / 2h."""
     return np.column_stack(
-        [(grad(x + _unit(x.size, j)) - grad(x - _unit(x.size, j))) / (2 * H) for j in range(x.size)]
+        [
+            (grad(x + _unit(x.size, j)) - grad(x - _unit(x.size, j))) / (2 * H)
+            for j in range(x.size)
+        ]
     )
 
 
@@ -62,7 +68,11 @@ def test_gradient_matches_finite_difference(f, grad, x):
 
 @pytest.mark.parametrize(
     ("grad", "hess", "x"),
-    [(fun1_grad, fun1_hess, X1), (fun2_grad, fun2_hess, X2), (fun3_grad, fun3_hess, X3)],
+    [
+        (fun1_grad, fun1_hess, X1),
+        (fun2_grad, fun2_hess, X2),
+        (fun3_grad, fun3_hess, X3),
+    ],
 )
 def test_hessian_matches_difference_of_gradients(grad, hess, x):
     approx = hessian(grad, x)
@@ -153,4 +163,8 @@ def test_every_problem_starts_somewhere_finite(key):
 
 
 def test_data_files_ship_with_the_repository():
-    assert sorted(f.name for f in DATA.glob("*.txt")) == ["fun2_A.txt", "fun2_b.txt", "fun2_c.txt"]
+    assert sorted(f.name for f in DATA.glob("*.txt")) == [
+        "fun2_A.txt",
+        "fun2_b.txt",
+        "fun2_c.txt",
+    ]

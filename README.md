@@ -3,15 +3,9 @@
 Group 1: AJ Barea, Hem Raj Pandeya, Jinting Liu, Max Frohman
 
 Implement gradient descent, Newton, and quasi-Newton, run each on three functions, and
-analyze where each method works and where it breaks down.
-
-| Folder | What goes there |
-|---|---|
-| `inside/` | The in-class project: the instructor's three functions |
-| `outside/` | The out-of-class project: a problem we pick ourselves |
+analyze each.
 
 ## Setup
-
 ```bash
 python3 -m venv .venv          # Python 3.12 or newer
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
@@ -42,8 +36,8 @@ p.f(p.x0), p.grad(p.x0), p.hess(p.x0)
 | File | Method |
 |---|---|
 | `inside/line_search.py` | Backtracking line search and the descent loop the methods share |
-| `inside/gradient_descent.py` | Gradient descent, alpha0 = 1 or p.18's previous-step rule |
-| `inside/newton.py` | Newton, with p.24's Greenstadt modification as an option (`modified=True`) |
+| `inside/gradient_descent.py` | Gradient descent |
+| `inside/newton.py` | Newton |
 | `inside/quasi_newton.py` | Quasi-Newton: BFGS |
 
 `line_search.minimize(f, grad, x0, direction)` runs the loop for any method that supplies
@@ -74,11 +68,3 @@ the iterations and the time, and saves `inside/results/fun{1,2,3}_convergence.pn
 | fun3 | gd | 1.458e-09 | 9.76e-05 | 6277 |
 | fun3 | newton | 7.682e-24 | 1.22e-10 | 21 |
 | fun3 | bfgs | 2.746e-17 | 8.83e-08 | 34 |
-
-## What's left
-
-Everything still to do is an [issue](https://github.com/ajbarea/cisc820-project2/issues).
-
-- [#10](https://github.com/ajbarea/cisc820-project2/issues/10) Choose the outside project
-
-CI runs the tests on every push.
