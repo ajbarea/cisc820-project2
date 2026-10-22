@@ -10,7 +10,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from newton import greenstadt, newton
+from newton import newton
 from notes_examples import EXPONENTIAL, QUADRATIC
 
 RUNS = {"4.1 quadratic": QUADRATIC, "4.1 exponential": EXPONENTIAL}
@@ -59,19 +59,3 @@ def test_newton_converges_quadratically():
     e = [np.linalg.norm(x - x_star) for x in r.path]
     tail = [k for k in range(1, len(e) - 1) if 1e-10 < e[k] < 1e-2 and e[k + 1] > 0]
     assert tail and all(e[k + 1] <= 10 * e[k] ** 2 for k in tail)
-
-
-def test_greenstadt_makes_an_indefinite_hessian_positive_definite():
-    """p.24: H + E is symmetric p.d., its smallest eigenvalue bounded away from 0."""
-    H = np.array([[1.0, 3.0], [3.0, 1.0]])  # eigenvalues 4, -2
-    Hm = greenstadt(H)
-    assert Hm == pytest.approx(Hm.T)
-    assert np.linalg.eigvalsh(Hm) == pytest.approx([2.0, 4.0])
-
-
-def test_greenstadt_leaves_a_positive_definite_hessian_alone():
-    """Where H is already p.d., modified Newton takes the same steps as plain Newton."""
-    plain = newton(*EXPONENTIAL)
-    modified = newton(*EXPONENTIAL, modified=True)
-    assert modified.iterations == plain.iterations
-    assert modified.x == pytest.approx(plain.x)

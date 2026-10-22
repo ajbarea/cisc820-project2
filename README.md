@@ -53,9 +53,11 @@ python inside/run.py -functions fun3 -methods bfgs  # a subset (methods: gd, new
 ```
 
 It prints one row per function and method: f at the solution, the gradient norm there,
-the iterations and the time, and saves `inside/results/fun{1,2,3}_convergence.png`
-(f(x_k) - f* per iteration). `--tol` changes the stopping rule (default 1e-12);
-`--no-plot` skips the figures.
+the iterations and the time, and saves the plots to `inside/results/`:
+`fun1_convergence.png` (f(x_k) - f_min, the convergence curve the project asks for, since
+fun1 is the only function whose minimum is given) and `fun2_gradient_norm.png`,
+`fun3_gradient_norm.png` (norm of grad f(x_k), which needs no minimum). `--tol` changes
+the stopping rule (default 1e-12); `--no-plot` skips the figures.
 
 | Function | Method | f(x*) | norm grad f(x*) | Iterations |
 |---|---|---|---|---|

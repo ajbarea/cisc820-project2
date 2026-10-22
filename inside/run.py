@@ -5,7 +5,7 @@
     python inside/run.py -functions fun3 --tol 1e-8      # the notes' stopping rule
 
 Prints one row per function and method (f at the solution, the gradient norm there, the
-iterations and the time) and saves a convergence plot per function to ``inside/results/``.
+iterations and the time) and saves one plot per function to ``inside/results/``.
 The default tolerance is 1e-12, because the notes' 1e-8 stops gradient descent early on
 fun3 (Rosenbrock), long before it reaches the minimum.
 """
@@ -84,10 +84,12 @@ def table(results):
 
 
 def plot(results, directory=RESULTS):
-    """One figure per function: f(x_k) - f* against k on a log scale, one line per method.
+    """One figure per function, one line per method, iteration k on the x-axis.
 
-    f* is the known minimum, or for fun2 (whose minimum the instructor withholds) the
-    lowest value any method reached (so the best run's last point is not drawn).
+    The project gives the true minimum only for fun1, "so that, for this particular
+    function, you can observe and show the convergence curve": fun1 gets f(x_k) - f_min.
+    fun2 and fun3 have their optima withheld, so they get the gradient norm |grad f(x_k)|,
+    which shows progress toward a stationary point without assuming a minimum.
     """
     import matplotlib
 
@@ -97,27 +99,32 @@ def plot(results, directory=RESULTS):
     directory.mkdir(exist_ok=True)
     paths = []
     for fname in dict.fromkeys(f for f, _ in results):
+        problem = PROBLEMS[fname]
         runs = {m: r for (f, m), (r, _) in results.items() if f == fname}
-        fstar = PROBLEMS[fname].minimum
-        if fstar is None:
-            fstar = min(r.f for r in runs.values())
         fig, ax = plt.subplots(figsize=(6, 4))
         for mname, r in runs.items():
-            gap = np.asarray(r.values) - fstar
-            gap[
-                gap <= 0
-            ] = np.nan  # reached f* to machine precision: nothing to draw on a log axis
-            ax.semilogy(gap, label=f"{mname} ({r.iterations} it)")
-        ax.set(
-            xlabel="iteration k",
-            ylabel="f(x_k) - f*",
-            title=f"{fname}: {PROBLEMS[fname].name}",
-        )
+            if problem.minimum is not None:
+                y = np.asarray(r.values) - problem.minimum
+                y[y <= 0] = (
+                    np.nan
+                )  # f_min reached exactly: nothing to draw on a log axis
+            else:
+                with np.errstate(all="ignore"):
+                    y = np.array([np.linalg.norm(problem.grad(x)) for x in r.path])
+            ax.semilogy(y, label=f"{mname} ({r.iterations} it)")
+        if problem.minimum is not None:
+            ylabel, kind = (
+                f"f(x_k) - f_min  (f_min = {problem.minimum:g})",
+                "convergence",
+            )
+        else:
+            ylabel, kind = "norm of grad f(x_k)", "gradient_norm"
+        ax.set(xlabel="iteration k", ylabel=ylabel, title=f"{fname}: {problem.name}")
         ax.set_xscale("symlog", linthresh=10)
         ax.grid(True, which="both", alpha=0.3)
         ax.legend()
         fig.tight_layout()
-        path = directory / f"{fname}_convergence.png"
+        path = directory / f"{fname}_{kind}.png"
         fig.savefig(path, dpi=150)
         plt.close(fig)
         paths.append(path)

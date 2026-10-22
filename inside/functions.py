@@ -220,8 +220,8 @@ PROBLEMS = {
         hess=fun3_hess,
         n=2,
         x0=np.array([-1.2, 1.0]),
-        minimum=0.0,
-        note="Rosenbrock. Non-convex. Its minimum, 0 at (1, 1), is the textbook value; the "
-        "instructor does not give it. (-1.2, 1.0) is the standard starting point.",
+        minimum=None,
+        note="Rosenbrock. Non-convex. The instructor withholds its minimum until after the "
+        "project (the textbook value is 0 at (1, 1)). (-1.2, 1.0) is the standard start.",
     ),
 }
