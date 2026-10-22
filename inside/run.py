@@ -101,17 +101,38 @@ def plot(results, directory=RESULTS):
     for fname in dict.fromkeys(f for f, _ in results):
         problem = PROBLEMS[fname]
         runs = {m: r for (f, m), (r, _) in results.items() if f == fname}
-        fig, ax = plt.subplots(figsize=(6, 4))
+        curves = {}
         for mname, r in runs.items():
             if problem.minimum is not None:
-                y = np.asarray(r.values) - problem.minimum
-                y[y <= 0] = (
-                    np.nan
-                )  # f_min reached exactly: nothing to draw on a log axis
+                curves[mname] = np.asarray(r.values) - problem.minimum
             else:
                 with np.errstate(all="ignore"):
-                    y = np.array([np.linalg.norm(problem.grad(x)) for x in r.path])
-            ax.semilogy(y, label=f"{mname} ({r.iterations} it)")
+                    curves[mname] = np.array(
+                        [np.linalg.norm(problem.grad(x)) for x in r.path]
+                    )
+        # A log axis cannot show 0, which Newton reaches exactly on a quadratic with some
+        # LAPACK builds. Draw exact zeros on a floor below every positive value, marked with
+        # a downward triangle, rather than dropping them (which can erase a whole line).
+        positive = np.concatenate([y[y > 0] for y in curves.values()])
+        floor = (positive.min() if positive.size else 1.0) / 100
+        fig, ax = plt.subplots(figsize=(6, 4))
+        for mname, y in curves.items():
+            zero = y <= 0
+            y = np.where(zero, floor, y)
+            short = (
+                len(y) <= 30
+            )  # mark the points of short runs so a line of 3 stays visible
+            (line,) = ax.semilogy(
+                y,
+                marker="o" if short else None,
+                markersize=4,
+                label=f"{mname} ({runs[mname].iterations} it)",
+            )
+            if zero.any():
+                k = np.flatnonzero(zero)
+                ax.semilogy(k, y[k], "v", color=line.get_color(), markersize=8)
+        if any((y <= 0).any() for y in curves.values()):
+            ax.plot([], [], "v", color="gray", label="exactly 0 (drawn at floor)")
         if problem.minimum is not None:
             ylabel, kind = (
                 f"f(x_k) - f_min  (f_min = {problem.minimum:g})",
