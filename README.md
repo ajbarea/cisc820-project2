@@ -39,11 +39,8 @@ python inside/run.py -functions fun3 -methods bfgs  # a subset (methods: gd, new
 ```
 
 It prints one row per function and method: f at the solution, the gradient norm there,
-the iterations and the time, and saves one plot per function to `inside/results/`:
+the iterations and the time, and saves one plot per function to `inside/results/`.
 
-- `fun1_convergence.png`: `f(x_k) - f_min` per iteration. Because the optimum is provided, we can show the convergence as the difference between the two values.
-- `fun2_gradient_norm.png`, `fun3_gradient_norm.png`: the norm of grad f(x_k) per
-  iteration. Their optima are withheld, so these show progress without assuming a minimum.
 
 `--tol` changes the stopping rule (default 1e-12); `--no-plot` skips the figures.
 
@@ -62,9 +59,24 @@ the iterations and the time, and saves one plot per function to `inside/results/
 | fun3     | newton | 7.682025129e-24 |        1.22e-10 |         21 |   0.001 |
 | fun3     | bfgs   | 2.745652475e-17 |        8.83e-08 |         34 |   0.002 |
 
+
+## Convergence Plots
+![fun1 convergence graph](inside/results/fun1_convergence.png)
+
+![fun2 convergence graph](inside/results/fun2_gradient_norm.png)
+
+![fun3 convergence graph](inside/results/fun3_gradient_norm.png)
+
+`fun1_convergence.png`: `f(x_k) - f_min` per iteration. Because the optimum is provided, we can show the convergence as the difference between the two values.
+
+`fun2_gradient_norm.png`, `fun3_gradient_norm.png`: the norm of grad f(x_k) per
+  iteration. Their optima are withheld, so these show progress without assuming a minimum.
+
+
 ## Final Optimal Function Minima
 | Function | Function Minimum | Method Used |
 |---|---|---|
 | fun1 | 0 | newton |
 | fun2 | -2443.247657 | newton |
 | fun3 | 7.682025129e-24 | newton |
+
