@@ -76,7 +76,7 @@ def table(results):
         return "| " + " | ".join(padded) + " |"
 
     dashes = [
-        "-" * (w + 2) if i < text_columns else "-" * (w + 1) + ":"
+        "-" * (w + 2) if i < text_columns else "-" * (w + 1) + "-"
         for i, w in enumerate(widths)
     ]
     rule = "|" + "|".join(dashes) + "|"
