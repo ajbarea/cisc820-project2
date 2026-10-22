@@ -10,7 +10,6 @@ analyze each.
 python3 -m venv .venv          # Python 3.12 or newer
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-pytest -q
 ```
 
 ## The three functions
