@@ -1,9 +1,7 @@
 """Line search and the iteration every descent method shares (notes section 2.2).
 
     backtracking         p.14  shrink alpha by rho until sufficient decrease holds
-    interpolated_step    p.15  minimiser of the quadratic through phi(0), phi'(0), phi(alpha0)
     previous_step_alpha0 p.18  alpha0 that repeats the last step's first-order change
-    quadratic_alpha0     p.18  alpha0 from a quadratic through the last two f values
     minimize             p.12  "until x is a good enough solution": find p, step, repeat
 
 Every method here picks a search direction p, then the line search picks a step length
@@ -26,10 +24,8 @@ import numpy as np
 __all__ = [
     "Result",
     "backtracking",
-    "interpolated_step",
     "minimize",
     "previous_step_alpha0",
-    "quadratic_alpha0",
 ]
 
 # The notes' examples all use c = 0.1 and rho = 1/2.
@@ -67,22 +63,9 @@ def backtracking(f, x, p, grad_x, alpha0=1.0, c=C, rho=RHO, fx=None):
             alpha *= rho
 
 
-def interpolated_step(phi0, dphi0, alpha0, phi_alpha0):
-    """alpha1 = -phi'(0) alpha0^2 / (2 (phi(alpha0) - phi(0) - alpha0 phi'(0)))  (p.15)."""
-    return -dphi0 * alpha0**2 / (2 * (phi_alpha0 - phi0 - alpha0 * dphi0))
-
-
 def previous_step_alpha0(alpha_prev, p_prev, grad_prev, p, grad):
     """alpha0 = alpha_(k-1) p_(k-1)'grad f(x_(k-1)) / p_k'grad f(x_k)  (p.18, first rule)."""
     return alpha_prev * float(p_prev @ grad_prev) / float(p @ grad)
-
-
-def quadratic_alpha0(f_prev, f_curr, dphi0):
-    """alpha0 = 2 (f(x_k) - f(x_(k-1))) / phi'(0)  (p.18, second rule).
-
-    The notes write phi'(0) = p_(k-1)'grad f(x_(k-1)); pass whichever slope is wanted.
-    """
-    return 2 * (f_curr - f_prev) / dphi0
 
 
 @dataclass

@@ -37,9 +37,6 @@ p = PROBLEMS["fun1"]
 p.f(p.x0), p.grad(p.x0), p.hess(p.x0)
 ```
 
-`inside/derivatives.py` has finite-difference gradients and Hessians, handy for checking
-your own derivatives.
-
 ## The methods
 
 | File | Method |
@@ -47,8 +44,7 @@ your own derivatives.
 | `inside/line_search.py` | Backtracking line search and the descent loop the methods share |
 | `inside/gradient_descent.py` | Gradient descent, alpha0 = 1 or p.18's previous-step rule |
 | `inside/newton.py` | Newton, with p.24's Greenstadt modification as an option (`modified=True`) |
-| `inside/quasi_newton.py` | BFGS (`inverse=True` for p.28's inverse form) and DFP |
-| `inside/nelder_mead.py` | Nelder-Mead simplex, derivative-free: `nelder_mead(f, simplex)` |
+| `inside/quasi_newton.py` | Quasi-Newton: BFGS (`inverse=True` for p.28's inverse form) |
 
 `line_search.minimize(f, grad, x0, direction)` runs the loop for any method that supplies
 `direction(x, g) -> p`. It stops once f changes by less than `tol` (1e-8 by default, which
@@ -62,7 +58,21 @@ python inside/run.py            # all three functions; add fun2 or fun3 to run j
 ```
 
 It prints one row per function and method: f at the solution, the gradient norm there,
-the iterations and the time. `--tol` changes the stopping rule (default 1e-12).
+the iterations and the time, and saves `inside/results/fun{1,2,3}_convergence.png`
+(f(x_k) - f* per iteration). `--tol` changes the stopping rule (default 1e-12);
+`--no-plot` skips the figures.
+
+| Function | Method | f(x*) | norm grad f(x*) | Iterations |
+|---|---|---|---|---|
+| fun1 | Gradient descent | 4.918e-11 | 3.66e-05 | 533 |
+| fun1 | Newton | 2.233e-62 | 2.70e-30 | 2 |
+| fun1 | BFGS | 1.830e-17 | 5.35e-08 | 115 |
+| fun2 | Gradient descent | -2443.247657 | 1.68e-04 | 6724 |
+| fun2 | Newton | -2443.247657 | 9.17e-11 | 11 |
+| fun2 | BFGS | -2443.247657 | 2.91e-05 | 205 |
+| fun3 | Gradient descent | 1.458e-09 | 9.76e-05 | 6277 |
+| fun3 | Newton | 7.682e-24 | 1.22e-10 | 21 |
+| fun3 | BFGS | 2.746e-17 | 8.83e-08 | 34 |
 
 ## What's left
 

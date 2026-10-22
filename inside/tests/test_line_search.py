@@ -1,5 +1,5 @@
-"""``line_search.py`` against what topic-05, section 2.2, states about backtracking and
-interpolation, on the notes' quadratic and exponential examples.
+"""``line_search.py`` against what topic-05, section 2.2, states about backtracking, on the notes'
+quadratic and exponential examples.
 """
 
 from __future__ import annotations
@@ -7,7 +7,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from line_search import RHO, C, backtracking, interpolated_step, minimize
+from line_search import RHO, C, backtracking, minimize
 from notes_examples import EXPONENTIAL, QUADRATIC
 
 
@@ -21,16 +21,6 @@ def test_backtracking_accepts_sufficient_decrease_and_rejected_the_step_before()
     with np.errstate(over="ignore"):
         rejected = f(x0 + alpha / RHO * p)
     assert rejected > f(x0) + C * alpha / RHO * (p @ g)
-
-
-def test_interpolation_is_the_exact_line_minimiser_on_a_quadratic():
-    """p.12 and p.15: for a quadratic phi, the interpolated alpha is exact line search."""
-    f, grad, _, x0 = QUADRATIC
-    p = -grad(x0)
-    a1 = interpolated_step(f(x0), p @ grad(x0), 1.0, f(x0 + p))
-    exact = (p @ p) / (p @ np.diag([2.0, 20.0]) @ p)  # argmin of f(x0 + alpha p)
-    assert a1 == pytest.approx(exact)
-    assert grad(x0 + a1 * p) @ p == pytest.approx(0, abs=1e-9)
 
 
 def test_backtracking_refuses_an_ascent_direction():

@@ -15,4 +15,4 @@ target-version = "py312"
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["derivatives", "functions", "gradient_descent", "line_search", "nelder_mead", "newton", "notes_examples", "quasi_newton", "run"]
+known-first-party = ["functions", "gradient_descent", "line_search", "newton", "notes_examples", "quasi_newton", "run"]

@@ -18,7 +18,7 @@ import pytest
 from gradient_descent import gradient_descent
 from newton import newton
 from notes_examples import EXPONENTIAL, QUADRATIC
-from quasi_newton import bfgs, bfgs_inverse_update, bfgs_update, dfp, dfp_update
+from quasi_newton import bfgs, bfgs_inverse_update, bfgs_update
 
 RUNS = {"5.1 quadratic": QUADRATIC, "5.1 exponential": EXPONENTIAL}
 
@@ -87,17 +87,12 @@ def test_bfgs_first_step_is_a_gradient_descent_step(name):
     assert run(name).path[1] == pytest.approx(gradient_descent(f, grad, x0).path[1])
 
 
-@pytest.mark.parametrize("update", [bfgs_update, dfp_update], ids=["bfgs", "dfp"])
-def test_quasi_newton_updates_satisfy_the_secant_equation(update):
-    """p.26: B_(k+1) s = y for BFGS; the inverse form C_(k+1) y = s for DFP."""
+def test_bfgs_update_satisfies_the_secant_equation():
+    """p.26: B_(k+1) s = y."""
     rng = np.random.default_rng(0)
     s, y = rng.normal(size=3), rng.normal(size=3)
     y = y if y @ s > 0 else -y
-    M = update(np.eye(3), s, y)
-    if update is bfgs_update:
-        assert M @ s == pytest.approx(y)
-    else:
-        assert M @ y == pytest.approx(s)
+    assert bfgs_update(np.eye(3), s, y) @ s == pytest.approx(y)
 
 
 def test_bfgs_inverse_update_is_the_inverse_of_the_bfgs_update():
@@ -112,7 +107,9 @@ def test_bfgs_inverse_update_is_the_inverse_of_the_bfgs_update():
         assert F == pytest.approx(np.linalg.inv(B))
 
 
-@pytest.mark.parametrize("method", [bfgs, dfp], ids=["bfgs", "dfp"])
-def test_quasi_newton_reaches_newtons_minimiser(method):
+@pytest.mark.parametrize("inverse", [False, True])
+def test_bfgs_reaches_newtons_minimiser(inverse):
     f, grad, hess, x0 = EXPONENTIAL
-    assert method(f, grad, x0).x == pytest.approx(newton(f, grad, hess, x0).x, abs=1e-4)
+    assert bfgs(f, grad, x0, inverse=inverse).x == pytest.approx(
+        newton(f, grad, hess, x0).x, abs=1e-4
+    )

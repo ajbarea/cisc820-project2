@@ -1,6 +1,5 @@
-"""Quasi-Newton methods (notes section 5, p.26): p = -B^-1 grad f(x), B built from gradients.
+"""Quasi-Newton: BFGS (notes section 5, p.26): p = -B^-1 grad f(x), B built from gradients.
 
-    dfp_update           p.27  C = approximate inverse Hessian, rank-two update
     bfgs_update          p.27  B = approximate Hessian, rank-two update
     bfgs_inverse_update  p.28  F = B^-1 updated directly (Sherman-Morrison-Woodbury)
 
@@ -9,7 +8,7 @@ much the gradient changed over it. Each update makes the new matrix agree with t
 (the secant equation B s = y), so it learns the curvature without ever computing H.
 y's is y transposed times s, a dot product.
 
-The notes do not give the starting matrix. B0 = C0 = I makes the first step a
+The notes do not give the starting matrix. B0 = I makes the first step a
 gradient-descent step, which is what the figures on p.30 show. alpha0 = 1 always (p.29).
 
 Each update keeps the matrix positive definite only while y's > 0 (p.27 asks for exactly
@@ -27,15 +26,9 @@ import numpy as np
 
 from line_search import minimize
 
-__all__ = ["bfgs", "bfgs_inverse_update", "bfgs_update", "dfp", "dfp_update"]
+__all__ = ["bfgs", "bfgs_inverse_update", "bfgs_update"]
 
 CURVATURE = 1e-10  # skip the update unless y's exceeds this fraction of |s||y|
-
-
-def dfp_update(C, s, y):
-    """C + s s'/(y's) - C y y' C/(y'C y)."""
-    Cy = C @ y
-    return C - np.outer(Cy, Cy) / (y @ Cy) + np.outer(s, s) / (y @ s)
 
 
 def bfgs_update(B, s, y):
@@ -73,8 +66,3 @@ def bfgs(f, grad, x0, inverse=False, **options):
     if inverse:
         return _quasi_newton(f, grad, x0, bfgs_inverse_update, lambda F, g: -F @ g, **options)
     return _quasi_newton(f, grad, x0, bfgs_update, lambda B, g: np.linalg.solve(B, -g), **options)
-
-
-def dfp(f, grad, x0, **options):
-    """DFP, which updates C = approximate H^-1, so p = -C grad f(x)."""
-    return _quasi_newton(f, grad, x0, dfp_update, lambda C, g: -C @ g, **options)

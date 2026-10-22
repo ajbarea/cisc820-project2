@@ -8,7 +8,6 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from derivatives import gradient, hessian
 from functions import (
     DATA,
     PROBLEMS,
@@ -29,6 +28,27 @@ from functions import (
 X1 = np.linspace(-1.0, 1.0, 100)
 X2 = np.zeros(100)
 X3 = np.array([-1.2, 1.0])
+H = 1e-6  # central-difference step
+
+
+def _unit(n, i):
+    e = np.zeros(n)
+    e[i] = H
+    return e
+
+
+def gradient(f, x):
+    """Central difference (f(x + h e_i) - f(x - h e_i)) / 2h, one coordinate at a time."""
+    return np.array(
+        [(f(x + _unit(x.size, i)) - f(x - _unit(x.size, i))) / (2 * H) for i in range(x.size)]
+    )
+
+
+def hessian(grad, x):
+    """Column j is (grad(x + h e_j) - grad(x - h e_j)) / 2h."""
+    return np.column_stack(
+        [(grad(x + _unit(x.size, j)) - grad(x - _unit(x.size, j))) / (2 * H) for j in range(x.size)]
+    )
 
 
 @pytest.mark.parametrize(
@@ -36,7 +56,7 @@ X3 = np.array([-1.2, 1.0])
     [(fun1, fun1_grad, X1), (fun2, fun2_grad, X2), (fun3, fun3_grad, X3)],
 )
 def test_gradient_matches_finite_difference(f, grad, x):
-    approx = gradient(f, x, order=4)
+    approx = gradient(f, x)
     assert np.allclose(approx, grad(x), rtol=1e-5, atol=1e-5)
 
 
@@ -45,7 +65,7 @@ def test_gradient_matches_finite_difference(f, grad, x):
     [(fun1_grad, fun1_hess, X1), (fun2_grad, fun2_hess, X2), (fun3_grad, fun3_hess, X3)],
 )
 def test_hessian_matches_difference_of_gradients(grad, hess, x):
-    approx = hessian(grad, x, central=True)
+    approx = hessian(grad, x)
     assert np.allclose(approx, hess(x), rtol=1e-4, atol=1e-4)
 
 

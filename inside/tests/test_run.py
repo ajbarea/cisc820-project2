@@ -20,5 +20,5 @@ def test_table_has_one_row_per_pair():
     results = solve_all(["fun1"])
     rows = table(results).splitlines()[2:]
     assert len(rows) == len(METHODS)
-    assert all(row.startswith("| fun1 |") for row in rows)
+    assert all(row.startswith("| fun1 ") for row in rows)
     assert PROBLEMS["fun1"].minimum == 0.0
