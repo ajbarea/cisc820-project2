@@ -25,24 +25,23 @@ import numpy as np  # noqa: E402
 from functions import PROBLEMS  # noqa: E402
 from gradient_descent import gradient_descent  # noqa: E402
 from newton import newton  # noqa: E402
-from quasi_newton import bfgs, dfp  # noqa: E402
+from quasi_newton import bfgs  # noqa: E402
 
 TOL = 1e-12
 
 METHODS = {
-    "Gradient descent": lambda p, **kw: gradient_descent(p.f, p.grad, p.x0, **kw),
-    "Newton": lambda p, **kw: newton(p.f, p.grad, p.hess, p.x0, **kw),
-    "BFGS": lambda p, **kw: bfgs(p.f, p.grad, p.x0, **kw),
-    "DFP": lambda p, **kw: dfp(p.f, p.grad, p.x0, **kw),
+    "gd": lambda p, **kw: gradient_descent(p.f, p.grad, p.x0, **kw),
+    "newton": lambda p, **kw: newton(p.f, p.grad, p.hess, p.x0, **kw),
+    "bfgs": lambda p, **kw: bfgs(p.f, p.grad, p.x0, **kw),
 }
 
 
-def solve_all(functions=None, tol=TOL, max_iter=100_000):
+def solve_all(functions=None, methods=None, tol=TOL, max_iter=100_000):
     """{(function, method): (Result, seconds)} for every requested pair."""
     out = {}
     for fname in functions or PROBLEMS:
         problem = PROBLEMS[fname]
-        for mname, run in METHODS.items():
+        for mname, run in methods.items():
             t0 = time.perf_counter()
             result = run(problem, tol=tol, max_iter=max_iter)
             out[fname, mname] = (result, time.perf_counter() - t0)
@@ -52,25 +51,32 @@ def solve_all(functions=None, tol=TOL, max_iter=100_000):
 def table(results):
     """Markdown table: f(x*), norm of the gradient at x*, iterations, seconds."""
     lines = [
-        "| Function | Method | f(x*) | norm grad f(x*) | Iterations | Seconds |",
-        "|---|---|---|---|---|---|",
+        "| Function | Method |       f(x*)       | norm grad f(x*) | Iterations | Seconds |",
+        "|----------|--------|-------------------|-----------------|------------|---------|",
     ]
     for (fname, mname), (r, sec) in results.items():
         g = np.linalg.norm(PROBLEMS[fname].grad(r.x))
-        lines.append(f"| {fname} | {mname} | {r.f:.10g} | {g:.2e} | {r.iterations} | {sec:.3f} |")
+        lines.append(f"| {fname:<8} | {mname:<6} | {r.f:>17.10g} | {g:>15.2e} | {r.iterations:>10} | {sec:>7.3f} |")
     return "\n".join(lines)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("functions", nargs="*", help=f"any of {', '.join(PROBLEMS)} (default: all)")
+    parser.add_argument("-functions", nargs="*", help=f"any of {', '.join(PROBLEMS)} (default: all)")
+    parser.add_argument("-methods", nargs="*", help=f"any of {', '.join(METHODS.keys())} (default: all)", default=list(METHODS.keys()))
     parser.add_argument("--tol", type=float, default=TOL, help="stop when |f_k - f_(k-1)| < tol")
     args = parser.parse_args()
-    unknown = sorted(set(args.functions) - set(PROBLEMS))
-    if unknown:
-        parser.error(f"unknown function(s): {', '.join(unknown)}")
+    unknown_funcs = sorted(set(args.functions) - set(PROBLEMS))
+    if unknown_funcs:
+        parser.error(f"unknown function(s): {', '.join(unknown_funcs)}")
+    unknown_methods = sorted(set(args.methods) - set(METHODS.keys()))
+    if unknown_methods:
+        parser.error(f"unknown method(s): {', '.join(unknown_methods)}")
+    
+    methods = {k: v for k, v in METHODS.items() if k in args.methods}
+    
     print(f"Stopping rule: |f(x_k) - f(x_(k-1))| < {args.tol:g}\n")
-    print(table(solve_all(args.functions or None, args.tol)))
+    print(table(solve_all(args.functions or None, methods, args.tol)))
 
 
 if __name__ == "__main__":

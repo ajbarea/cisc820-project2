@@ -27,28 +27,15 @@ import numpy as np
 
 from line_search import minimize
 
-__all__ = ["bfgs", "bfgs_inverse_update", "bfgs_update", "dfp", "dfp_update"]
+__all__ = ["bfgs", "bfgs_update"]
 
 CURVATURE = 1e-10  # skip the update unless y's exceeds this fraction of |s||y|
-
-
-def dfp_update(C, s, y):
-    """C + s s'/(y's) - C y y' C/(y'C y)."""
-    Cy = C @ y
-    return C - np.outer(Cy, Cy) / (y @ Cy) + np.outer(s, s) / (y @ s)
 
 
 def bfgs_update(B, s, y):
     """B - B s s' B/(s'B s) + y y'/(y's)."""
     Bs = B @ s
     return B - np.outer(Bs, Bs) / (s @ Bs) + np.outer(y, y) / (y @ s)
-
-
-def bfgs_inverse_update(F, s, y):
-    """F + y'(F y + s)/(y's)^2 s s' - (s y'F + F y s')/(y's)  (p.28)."""
-    ys = y @ s
-    Fy = F @ y
-    return F + (y @ (Fy + s)) / ys**2 * np.outer(s, s) - (np.outer(s, Fy) + np.outer(Fy, s)) / ys
 
 
 def _quasi_newton(f, grad, x0, update, solve, **options):
@@ -68,13 +55,6 @@ def _quasi_newton(f, grad, x0, update, solve, **options):
     return minimize(f, grad, x0, direction, alpha0="one", **options)
 
 
-def bfgs(f, grad, x0, inverse=False, **options):
-    """BFGS. ``inverse=True`` updates F = B^-1 (p.28) and skips the linear solve."""
-    if inverse:
-        return _quasi_newton(f, grad, x0, bfgs_inverse_update, lambda F, g: -F @ g, **options)
+def bfgs(f, grad, x0, **options):
+    """BFGS."""
     return _quasi_newton(f, grad, x0, bfgs_update, lambda B, g: np.linalg.solve(B, -g), **options)
-
-
-def dfp(f, grad, x0, **options):
-    """DFP, which updates C = approximate H^-1, so p = -C grad f(x)."""
-    return _quasi_newton(f, grad, x0, dfp_update, lambda C, g: -C @ g, **options)
