@@ -1,4 +1,4 @@
-# CISC-820 Project 2: Unconstrained Optimization
+# CISC-820 In-Class Project 2
 
 Group 1: AJ Barea, Hem Raj Pandeya, Jinting Liu, Max Frohman
 
@@ -21,31 +21,17 @@ pytest -q
 | fun2 | `c'x - sum(log(b - Ax))` | 100 | `zeros(100)` |
 | fun3 | `100(x2 - x1^2)^2 + (1 - x1)^2` (Rosenbrock) | 2 | `(-1.2, 1.0)` |
 
-They are already written, with their gradients and Hessians, in `inside/functions.py`.
-Each one comes with everything an optimizer needs:
-
-```python
-from functions import PROBLEMS
-
-p = PROBLEMS["fun1"]
-p.f(p.x0), p.grad(p.x0), p.hess(p.x0)
-```
 
 ## The methods
 
-| File | Method |
+| Name | Method |
 |---|---|
-| `inside/line_search.py` | Backtracking line search and the descent loop the methods share |
-| `inside/gradient_descent.py` | Gradient descent |
-| `inside/newton.py` | Newton |
-| `inside/quasi_newton.py` | Quasi-Newton: BFGS |
+| `gd` | Gradient descent |
+| `newton` | Newton |
+| `bfgs` | Quasi-Newton: BFGS |
 
-`line_search.minimize(f, grad, x0, direction)` runs the loop for any method that supplies
-`direction(x, g) -> p`. It stops once f changes by less than `tol` (1e-8 by default, which
-reproduces the iteration counts in the notes' figures) and returns every iterate in
-`Result.path`.
 
-## Run every method
+## Running the code
 
 ```bash
 python inside/run.py                                # every method on every function
@@ -53,18 +39,28 @@ python inside/run.py -functions fun3 -methods bfgs  # a subset (methods: gd, new
 ```
 
 It prints one row per function and method: f at the solution, the gradient norm there,
-the iterations and the time, and saves `inside/results/fun{1,2,3}_convergence.png`
-(f(x_k) - f* per iteration). `--tol` changes the stopping rule (default 1e-12);
+the iterations and the time, and saves `inside/results/fun{1,2,3}_convergence.png`. It plots
+`f(x_k) - f*` per iteration, using the optimal f(x_k) found if f* is unknown. `--tol` changes the stopping rule (default 1e-12);
 `--no-plot` skips the figures.
 
-| Function | Method | f(x*) | norm grad f(x*) | Iterations |
-|---|---|---|---|---|
-| fun1 | gd | 4.918e-11 | 3.66e-05 | 533 |
-| fun1 | newton | 2.233e-62 | 2.70e-30 | 2 |
-| fun1 | bfgs | 1.830e-17 | 5.35e-08 | 115 |
-| fun2 | gd | -2443.247657 | 1.68e-04 | 6724 |
-| fun2 | newton | -2443.247657 | 9.17e-11 | 11 |
-| fun2 | bfgs | -2443.247657 | 2.91e-05 | 205 |
-| fun3 | gd | 1.458e-09 | 9.76e-05 | 6277 |
-| fun3 | newton | 7.682e-24 | 1.22e-10 | 21 |
-| fun3 | bfgs | 2.746e-17 | 8.83e-08 | 34 |
+
+## Result Table
+
+| Function | Method |           f(x*) | norm grad f(x*) | Iterations | Seconds |
+|----------|--------|-----------------|-----------------|------------|---------|
+| fun1     | gd     | 4.918422049e-11 |        3.66e-05 |        533 |   0.059 |
+| fun1     | newton |               0 |        0.00e+00 |          2 |   0.001 |
+| fun1     | bfgs   | 1.829954299e-17 |        5.35e-08 |        115 |   0.024 |
+| fun2     | gd     |    -2443.247657 |        1.69e-04 |       6671 |   2.380 |
+| fun2     | newton |    -2443.247657 |        1.60e-10 |         11 |   0.006 |
+| fun2     | bfgs   |    -2443.247657 |        1.01e-05 |        202 |   0.059 |
+| fun3     | gd     | 1.457646837e-09 |        9.76e-05 |       6277 |   0.475 |
+| fun3     | newton | 7.682025129e-24 |        1.22e-10 |         21 |   0.001 |
+| fun3     | bfgs   | 2.745652475e-17 |        8.83e-08 |         34 |   0.002 |
+
+## Final Optimal Function Minima
+| Function | Function Minimum | Method Used |
+|---|---|---|
+| fun1 | 0 | newton |
+| fun2 | -2443.247657 | newton |
+| fun3 | 7.682025129e-24 | newton |
