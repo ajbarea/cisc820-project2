@@ -41,8 +41,7 @@ python inside/run.py -functions fun3 -methods bfgs  # a subset (methods: gd, new
 It prints one row per function and method: f at the solution, the gradient norm there,
 the iterations and the time, and saves one plot per function to `inside/results/`:
 
-- `fun1_convergence.png`: `f(x_k) - f_min` per iteration. fun1 is the only function whose
-  minimum (0) the project gives, so it is the one with a convergence curve.
+- `fun1_convergence.png`: `f(x_k) - f_min` per iteration. Because the optimum is provided, we can show the convergence as the difference between the two values.
 - `fun2_gradient_norm.png`, `fun3_gradient_norm.png`: the norm of grad f(x_k) per
   iteration. Their optima are withheld, so these show progress without assuming a minimum.
 
