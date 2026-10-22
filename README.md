@@ -55,6 +55,15 @@ your own derivatives.
 reproduces the iteration counts in the notes' figures) and returns every iterate in
 `Result.path`.
 
+## Run every method
+
+```bash
+python inside/run.py            # all three functions; add fun2 or fun3 to run just those
+```
+
+It prints one row per function and method: f at the solution, the gradient norm there,
+the iterations and the time. `--tol` changes the stopping rule (default 1e-12).
+
 ## What's left
 
 Everything still to do is an [issue](https://github.com/ajbarea/cisc820-project2/issues).
