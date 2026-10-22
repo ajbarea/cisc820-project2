@@ -18,7 +18,7 @@ import pytest
 from gradient_descent import gradient_descent
 from newton import newton
 from notes_examples import EXPONENTIAL, QUADRATIC
-from quasi_newton import bfgs, bfgs_inverse_update, bfgs_update
+from quasi_newton import bfgs, bfgs_update
 
 RUNS = {"5.1 quadratic": QUADRATIC, "5.1 exponential": EXPONENTIAL}
 
@@ -95,21 +95,6 @@ def test_bfgs_update_satisfies_the_secant_equation():
     assert bfgs_update(np.eye(3), s, y) @ s == pytest.approx(y)
 
 
-def test_bfgs_inverse_update_is_the_inverse_of_the_bfgs_update():
-    """p.28: F = B^-1 updated by Sherman-Morrison-Woodbury gives the same matrix."""
-    rng = np.random.default_rng(1)
-    B = np.eye(4)
-    F = np.eye(4)
-    for _ in range(5):
-        s, y = rng.normal(size=4), rng.normal(size=4)
-        y = y if y @ s > 0 else -y
-        B, F = bfgs_update(B, s, y), bfgs_inverse_update(F, s, y)
-        assert F == pytest.approx(np.linalg.inv(B))
-
-
-@pytest.mark.parametrize("inverse", [False, True])
-def test_bfgs_reaches_newtons_minimiser(inverse):
+def test_bfgs_reaches_newtons_minimiser():
     f, grad, hess, x0 = EXPONENTIAL
-    assert bfgs(f, grad, x0, inverse=inverse).x == pytest.approx(
-        newton(f, grad, hess, x0).x, abs=1e-4
-    )
+    assert bfgs(f, grad, x0).x == pytest.approx(newton(f, grad, hess, x0).x, abs=1e-4)

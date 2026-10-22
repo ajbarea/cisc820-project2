@@ -1,7 +1,8 @@
 """Run gradient descent, Newton and BFGS on the three project functions.
 
-    python inside/run.py                  # all three functions
-    python inside/run.py fun3 --tol 1e-8  # one function, the notes' stopping rule
+    python inside/run.py                                 # every method on every function
+    python inside/run.py -functions fun3 -methods bfgs  # a subset
+    python inside/run.py -functions fun3 --tol 1e-8      # the notes' stopping rule
 
 Prints one row per function and method (f at the solution, the gradient norm there, the
 iterations and the time) and saves a convergence plot per function to ``inside/results/``.
@@ -33,18 +34,18 @@ TOL = 1e-12
 RESULTS = Path(__file__).resolve().parent / "results"
 
 METHODS = {
-    "Gradient descent": lambda p, **kw: gradient_descent(p.f, p.grad, p.x0, **kw),
-    "Newton": lambda p, **kw: newton(p.f, p.grad, p.hess, p.x0, **kw),
-    "BFGS": lambda p, **kw: bfgs(p.f, p.grad, p.x0, **kw),
+    "gd": lambda p, **kw: gradient_descent(p.f, p.grad, p.x0, **kw),
+    "newton": lambda p, **kw: newton(p.f, p.grad, p.hess, p.x0, **kw),
+    "bfgs": lambda p, **kw: bfgs(p.f, p.grad, p.x0, **kw),
 }
 
 
-def solve_all(functions=None, tol=TOL, max_iter=100_000):
-    """{(function, method): (Result, seconds)} for every requested pair."""
+def solve_all(functions=None, methods=None, tol=TOL, max_iter=100_000):
+    """{(function, method): (Result, seconds)} for every requested pair (default: all)."""
     out = {}
     for fname in functions or PROBLEMS:
         problem = PROBLEMS[fname]
-        for mname, run in METHODS.items():
+        for mname, run in (methods or METHODS).items():
             t0 = time.perf_counter()
             # Some numpy builds on macOS raise spurious divide/overflow flags inside matmul.
             with np.errstate(all="ignore"):
@@ -116,15 +117,25 @@ def plot(results, directory=RESULTS):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("functions", nargs="*", help=f"any of {', '.join(PROBLEMS)} (default: all)")
+    parser.add_argument(
+        "-functions", nargs="*", default=[], help=f"any of {', '.join(PROBLEMS)} (default: all)"
+    )
+    parser.add_argument(
+        "-methods", nargs="*", default=[], help=f"any of {', '.join(METHODS)} (default: all)"
+    )
     parser.add_argument("--tol", type=float, default=TOL, help="stop when |f_k - f_(k-1)| < tol")
     parser.add_argument("--no-plot", action="store_true", help="skip saving convergence plots")
     args = parser.parse_args()
-    unknown = sorted(set(args.functions) - set(PROBLEMS))
-    if unknown:
-        parser.error(f"unknown function(s): {', '.join(unknown)}")
+    unknown_funcs = sorted(set(args.functions) - set(PROBLEMS))
+    if unknown_funcs:
+        parser.error(f"unknown function(s): {', '.join(unknown_funcs)}")
+    unknown_methods = sorted(set(args.methods) - set(METHODS))
+    if unknown_methods:
+        parser.error(f"unknown method(s): {', '.join(unknown_methods)}")
+    methods = {k: v for k, v in METHODS.items() if k in args.methods} or None
+
     print(f"Stopping rule: |f(x_k) - f(x_(k-1))| < {args.tol:g}\n")
-    results = solve_all(args.functions or None, args.tol)
+    results = solve_all(args.functions or None, methods, args.tol)
     print(table(results))
     if not args.no_plot:
         print("\nSaved:", *plot(results), sep="\n  ")

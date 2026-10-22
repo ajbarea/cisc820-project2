@@ -1,7 +1,6 @@
 """Quasi-Newton: BFGS (notes section 5, p.26): p = -B^-1 grad f(x), B built from gradients.
 
     bfgs_update          p.27  B = approximate Hessian, rank-two update
-    bfgs_inverse_update  p.28  F = B^-1 updated directly (Sherman-Morrison-Woodbury)
 
 with s = x_(k+1) - x_k, the step just taken, and y = grad f(x_(k+1)) - grad f(x_k), how
 much the gradient changed over it. Each update makes the new matrix agree with that pair
@@ -26,7 +25,7 @@ import numpy as np
 
 from line_search import minimize
 
-__all__ = ["bfgs", "bfgs_inverse_update", "bfgs_update"]
+__all__ = ["bfgs", "bfgs_update"]
 
 CURVATURE = 1e-10  # skip the update unless y's exceeds this fraction of |s||y|
 
@@ -35,13 +34,6 @@ def bfgs_update(B, s, y):
     """B - B s s' B/(s'B s) + y y'/(y's)."""
     Bs = B @ s
     return B - np.outer(Bs, Bs) / (s @ Bs) + np.outer(y, y) / (y @ s)
-
-
-def bfgs_inverse_update(F, s, y):
-    """F + y'(F y + s)/(y's)^2 s s' - (s y'F + F y s')/(y's)  (p.28)."""
-    ys = y @ s
-    Fy = F @ y
-    return F + (y @ (Fy + s)) / ys**2 * np.outer(s, s) - (np.outer(s, Fy) + np.outer(Fy, s)) / ys
 
 
 def _quasi_newton(f, grad, x0, update, solve, **options):
@@ -61,8 +53,6 @@ def _quasi_newton(f, grad, x0, update, solve, **options):
     return minimize(f, grad, x0, direction, alpha0="one", **options)
 
 
-def bfgs(f, grad, x0, inverse=False, **options):
-    """BFGS. ``inverse=True`` updates F = B^-1 (p.28) and skips the linear solve."""
-    if inverse:
-        return _quasi_newton(f, grad, x0, bfgs_inverse_update, lambda F, g: -F @ g, **options)
+def bfgs(f, grad, x0, **options):
+    """BFGS."""
     return _quasi_newton(f, grad, x0, bfgs_update, lambda B, g: np.linalg.solve(B, -g), **options)

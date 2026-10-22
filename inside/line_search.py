@@ -70,7 +70,7 @@ def previous_step_alpha0(alpha_prev, p_prev, grad_prev, p, grad):
 
 @dataclass
 class Result:
-    """Where a run ended, and every iterate on the way (path[0] is the start)."""
+    """Where a run ended, and every iteration on the way (path[0] is the start)."""
 
     x: np.ndarray
     f: float
