@@ -56,9 +56,7 @@ def backtracking(f, x, p, grad_x, alpha0=1.0, c=C, rho=RHO, fx=None):
     with np.errstate(over="ignore", invalid="ignore"):
         while True:
             trial = x + alpha * p
-            if np.array_equal(
-                trial, x
-            ):  # every component rounds back: nothing left to try
+            if np.array_equal(trial, x):  # every component rounds back: nothing left to try
                 return 0.0
             if f(trial) <= fx + c * alpha * slope:  # False for nan and +inf
                 return alpha
@@ -107,9 +105,7 @@ def minimize(
     x = np.asarray(x0, dtype=np.float64).copy()
     fx = f(x)
     path, values, alphas = [x.copy()], [fx], []
-    prev = (
-        None  # (alpha, p, grad) of the last iteration, for the "previous" alpha0 rule
-    )
+    prev = None  # (alpha, p, grad) of the last iteration, for the "previous" alpha0 rule
     for _ in range(max_iter):
         g = np.asarray(grad(x), dtype=np.float64)
         p = direction(x, g)

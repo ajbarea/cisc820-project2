@@ -61,9 +61,7 @@ def table(results):
     for (fname, mname), (r, sec) in results.items():
         with np.errstate(all="ignore"):
             g = np.linalg.norm(PROBLEMS[fname].grad(r.x))
-        rows.append(
-            [fname, mname, f"{r.f:.10g}", f"{g:.2e}", str(r.iterations), f"{sec:.3f}"]
-        )
+        rows.append([fname, mname, f"{r.f:.10g}", f"{g:.2e}", str(r.iterations), f"{sec:.3f}"])
     # Pad every column to its widest cell: text left-aligned, numbers right-aligned.
     widths = [max(len(row[i]) for row in [header, *rows]) for i in range(len(header))]
     text_columns = 2  # Function and Method; the rest are numbers
@@ -76,8 +74,7 @@ def table(results):
         return "| " + " | ".join(padded) + " |"
 
     dashes = [
-        "-" * (w + 2) if i < text_columns else "-" * (w + 1) + "-"
-        for i, w in enumerate(widths)
+        "-" * (w + 2) if i < text_columns else "-" * (w + 1) + "-" for i, w in enumerate(widths)
     ]
     rule = "|" + "|".join(dashes) + "|"
     return "\n".join([line(header), rule, *(line(row) for row in rows)])
@@ -107,9 +104,7 @@ def plot(results, directory=RESULTS):
                 curves[mname] = np.asarray(r.values) - problem.minimum
             else:
                 with np.errstate(all="ignore"):
-                    curves[mname] = np.array(
-                        [np.linalg.norm(problem.grad(x)) for x in r.path]
-                    )
+                    curves[mname] = np.array([np.linalg.norm(problem.grad(x)) for x in r.path])
         # A log axis cannot show 0, which Newton reaches exactly on a quadratic with some
         # LAPACK builds. Draw exact zeros on a floor below every positive value, marked with
         # a downward triangle, rather than dropping them (which can erase a whole line).
@@ -119,9 +114,7 @@ def plot(results, directory=RESULTS):
         for mname, y in curves.items():
             zero = y <= 0
             y = np.where(zero, floor, y)
-            short = (
-                len(y) <= 30
-            )  # mark the points of short runs so a line of 3 stays visible
+            short = len(y) <= 30  # mark the points of short runs so a line of 3 stays visible
             (line,) = ax.semilogy(
                 y,
                 marker="o" if short else None,
@@ -166,12 +159,8 @@ def main():
         default=[],
         help=f"any of {', '.join(METHODS)} (default: all)",
     )
-    parser.add_argument(
-        "--tol", type=float, default=TOL, help="stop when |f_k - f_(k-1)| < tol"
-    )
-    parser.add_argument(
-        "--no-plot", action="store_true", help="skip saving convergence plots"
-    )
+    parser.add_argument("--tol", type=float, default=TOL, help="stop when |f_k - f_(k-1)| < tol")
+    parser.add_argument("--no-plot", action="store_true", help="skip saving convergence plots")
     args = parser.parse_args()
     unknown_funcs = sorted(set(args.functions) - set(PROBLEMS))
     if unknown_funcs:

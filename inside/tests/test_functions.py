@@ -40,20 +40,14 @@ def _unit(n, i):
 def gradient(f, x):
     """Central difference (f(x + h e_i) - f(x - h e_i)) / 2h, one coordinate at a time."""
     return np.array(
-        [
-            (f(x + _unit(x.size, i)) - f(x - _unit(x.size, i))) / (2 * H)
-            for i in range(x.size)
-        ]
+        [(f(x + _unit(x.size, i)) - f(x - _unit(x.size, i))) / (2 * H) for i in range(x.size)]
     )
 
 
 def hessian(grad, x):
     """Column j is (grad(x + h e_j) - grad(x - h e_j)) / 2h."""
     return np.column_stack(
-        [
-            (grad(x + _unit(x.size, j)) - grad(x - _unit(x.size, j))) / (2 * H)
-            for j in range(x.size)
-        ]
+        [(grad(x + _unit(x.size, j)) - grad(x - _unit(x.size, j))) / (2 * H) for j in range(x.size)]
     )
 
 

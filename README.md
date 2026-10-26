@@ -43,6 +43,9 @@ the iterations and the time, and saves one plot per function to `inside/results/
 
 `--tol` changes the stopping rule (default 1e-12); `--no-plot` skips the figures.
 
+Before pushing, format with `ruff format .` and check with `ruff check .` (not black: its
+88-column wrapping fails CI's ruff format check at our 100 columns).
+
 
 ## Result Table
 
