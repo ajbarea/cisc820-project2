@@ -5,6 +5,8 @@ Group 1: AJ Barea, Hem Raj Pandeya, Jinting Liu, Max Frohman
 Gradient descent, Newton and BFGS, run on three functions: the in-class half in `inside/`,
 our outside project in `outside/`.
 
+![Forced mass-spring-damper, the system our outside project identifies](outside/mass_spring_damper_intro.gif)
+
 ## Setup
 
 ```bash
