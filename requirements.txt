@@ -1,4 +1,6 @@
 numpy
+scipy
 matplotlib
+ipykernel
 pytest
-ruff
+ruff==0.17.2

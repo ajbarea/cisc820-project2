@@ -55,6 +55,4 @@ def _quasi_newton(f, grad, x0, update, solve, **options):
 
 def bfgs(f, grad, x0, **options):
     """BFGS."""
-    return _quasi_newton(
-        f, grad, x0, bfgs_update, lambda B, g: np.linalg.solve(B, -g), **options
-    )
+    return _quasi_newton(f, grad, x0, bfgs_update, lambda B, g: np.linalg.solve(B, -g), **options)
