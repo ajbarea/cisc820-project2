@@ -42,8 +42,6 @@ the iterations and the time, and saves one plot per function to `inside/results/
 
 ## Result Table
 
-Times vary from run to run.
-
 | Function | Method |           f(x*) | norm grad f(x*) | Iterations | Seconds |
 |----------|--------|-----------------|-----------------|------------|---------|
 | fun1     | gd     | 4.918422049e-11 |        3.66e-05 |        533 |   0.059 |
@@ -81,5 +79,4 @@ Their minima are not given, so these show progress without assuming one.
 
 Newton takes the fewest iterations and the least time on all three functions, then BFGS,
 which needs no Hessian. On fun1, a quadratic, Newton is exact in 2 iterations. fun3
-(Rosenbrock) is not quadratic, so Newton needs 21. Gradient descent takes 533 to 6,671
-iterations.
+(Rosenbrock) is not quadratic, so Newton needs 21.
